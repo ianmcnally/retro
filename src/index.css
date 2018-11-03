@@ -1,3 +1,9 @@
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+  --blue: blue;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -6,9 +12,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 1.6rem;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*, *:before, *:after {
+  box-sizing: inherit;
 }
+

@@ -1,0 +1,6 @@
+.transparent {
+  background-color: transparent;
+}
+.blue {
+  background-color: var(--blue);
+}
