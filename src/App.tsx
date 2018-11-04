@@ -10,7 +10,10 @@ function Entry({ children }: { children: string }) {
   return (
     <div className={styles.entry}>
       {children}
-      <label htmlFor={children}><span role="presentation">☆</span><span className={visually.hidden}>Starred</span></label>
+      <label htmlFor={children}>
+        <span role="presentation">☆</span>
+        <span className={visually.hidden}>Starred</span>
+      </label>
       <input type="checkbox" id={children} />
     </div>
   )
@@ -31,7 +34,9 @@ function Column({
 }) {
   return show ? (
     <section aria-labelledby={title} className={styles.column}>
-      <h2 id={title} className={styles.columnHeading}>{title}</h2>
+      <h2 id={title} className={styles.columnHeading}>
+        {title}
+      </h2>
       {children}
     </section>
   ) : null
@@ -58,7 +63,7 @@ function ColumnToggle({
       aria-checked={on}
       onClick={onClick}
       className={cx(styles.columnToggle, {
-        [backgroundColor.blue]: on,
+        [backgroundColor.columnToggle]: on,
         [backgroundColor.transparent]: !on,
       })}>
       <span role="presentation">{emoji}</span>
@@ -67,9 +72,22 @@ function ColumnToggle({
   )
 }
 
-function Compose({ categories }: { categories: string[] }) {
+function Compose({
+  categories,
+}: {
+  categories: { value: string; display: string }[]
+}) {
+  const onSubmit = (event: React.FormEvent<any>) => {
+    event.preventDefault()
+    //@ts-ignore
+    const { content, category } = event.target
+    //@ts-ignore
+    console.log('submit', 'content', content.value, 'category', category.value)
+    //@ts-ignore
+    event.target.reset()
+  }
   return (
-    <form className={styles.compose}>
+    <form name="compose" id="compose" className={styles.compose} onSubmit={onSubmit}>
       <label htmlFor="content" className={visually.hidden}>
         Write down your idea
       </label>
@@ -78,19 +96,21 @@ function Compose({ categories }: { categories: string[] }) {
         type="text"
         name="content"
         id="content"
-        placeholder="What would you like to stay?"
+        placeholder="What’s on your mind?"
       />
       <label htmlFor="select" className={visually.hidden}>
         Choose a category
       </label>
-      <select name="category" id="category">
-        {categories.map(category => (
-          <option value={category} key={category}>
-            {category}
+      <select className={styles.composeSelect} name="category" id="category">
+        {categories.map(({ value, display }) => (
+          <option value={value} key={value}>
+            {display}
           </option>
         ))}
       </select>
-      <button type="submit">Enter</button>
+      <button type="submit" className={visually.hidden}>
+        Enter
+      </button>
     </form>
   )
 }
@@ -115,51 +135,57 @@ function App() {
   }
   return (
     <>
-    <h1 className={visually.hidden}>Retro</h1>
-    <main className={styles.main}>
-      <Columns>
-        <Column title="Happy" show={showHappyColumn}>
-          <Entry>This is good</Entry>
-          <Entry>This is good, too</Entry>
-        </Column>
-        <Column title="Sad" show={showSadColumn}>
-          <Entry>This is sad</Entry>
-          <Entry>This is sad, too</Entry>
-        </Column>
-        <Column title="Confused" show={showConfusedColumn}>
-          <Entry>This is confused</Entry>
-          <Entry>This is confused, too</Entry>
-        </Column>
-        <Column title="Starred" show={showStarredColumn} />
-      </Columns>
-      <ColumnToggles>
-        <ColumnToggle
-          emoji={'👍'}
-          toggleFor="Happy"
-          onClick={handleHappyColumnToggle}
-          on={showHappyColumn}
+      <h1 className={visually.hidden}>Retro</h1>
+      <main className={styles.main}>
+        <Columns>
+          <Column title="Happy" show={showHappyColumn}>
+            <Entry>This is good</Entry>
+            <Entry>This is good, too</Entry>
+          </Column>
+          <Column title="Sad" show={showSadColumn}>
+            <Entry>This is sad</Entry>
+            <Entry>This is sad, too</Entry>
+          </Column>
+          <Column title="Confused" show={showConfusedColumn}>
+            <Entry>This is confused</Entry>
+            <Entry>This is confused, too</Entry>
+          </Column>
+          <Column title="Starred" show={showStarredColumn} />
+        </Columns>
+        <ColumnToggles>
+          <ColumnToggle
+            emoji={'👍'}
+            toggleFor="Happy"
+            onClick={handleHappyColumnToggle}
+            on={showHappyColumn}
+          />
+          <ColumnToggle
+            emoji={'👎'}
+            toggleFor="Sad"
+            onClick={handleSadColumnToggle}
+            on={showSadColumn}
+          />
+          <ColumnToggle
+            emoji={'😕'}
+            toggleFor="Confused"
+            onClick={handleConfusedColumnToggle}
+            on={showConfusedColumn}
+          />
+          <ColumnToggle
+            emoji={'⭐️'}
+            toggleFor="Starred"
+            onClick={handleStarredColumnToggle}
+            on={showStarredColumn}
+          />
+        </ColumnToggles>
+        <Compose
+          categories={[
+            { value: 'Happy', display: '👍' },
+            { value: 'Sad', display: '👎' },
+            { value: 'Confused', display: '😕' },
+          ]}
         />
-        <ColumnToggle
-          emoji={'👎'}
-          toggleFor="Sad"
-          onClick={handleSadColumnToggle}
-          on={showSadColumn}
-        />
-        <ColumnToggle
-          emoji={'😕'}
-          toggleFor="Confused"
-          onClick={handleConfusedColumnToggle}
-          on={showConfusedColumn}
-        />
-        <ColumnToggle
-          emoji={'⭐️'}
-          toggleFor="Starred"
-          onClick={handleStarredColumnToggle}
-          on={showStarredColumn}
-        />
-      </ColumnToggles>
-      <Compose categories={['Happy', 'Sad', 'Confused']} />
-    </main>
+      </main>
     </>
   )
 }

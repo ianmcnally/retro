@@ -27,7 +27,7 @@
 
 .columnToggle {
   font-size: 2rem;
-  border: 1px solid var(--blue);
+  border: 1px solid var(--column-toggle-color);
   padding: 1rem 1.5rem;
   margin-right: .1rem;
 }
@@ -37,9 +37,16 @@
   text-align: center;
 }
 
+.composeSelect {
+  border-color: transparent;
+  background-color: transparent;
+  font-size: 2rem;
+}
+
 .composeInput {
   font-size: 2rem;
   padding: 1rem;
+  min-width: 28rem;
 }
 
 .entry {

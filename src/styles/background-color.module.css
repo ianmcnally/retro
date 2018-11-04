@@ -1,6 +1,6 @@
 .transparent {
   background-color: transparent;
 }
-.blue {
-  background-color: var(--blue);
+.columnToggle {
+  background-color: var(--column-toggle-color);
 }

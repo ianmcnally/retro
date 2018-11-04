@@ -1,8 +1,8 @@
 html {
   box-sizing: border-box;
   font-size: 62.5%;
-  --blue: #036ad2;
-  --column-heading-background: #bfcede;
+  --column-toggle-color: #f0f4f7;
+  --column-heading-background: #9fb1c3;
   --entry-border: #cfd8e1;
 }
 
