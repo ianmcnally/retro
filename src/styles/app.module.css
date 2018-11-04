@@ -1,0 +1,49 @@
+.main {
+  display: grid;
+  grid-template-rows: minmax(60vh, 1fr) auto auto;
+  margin: 2rem;
+}
+
+.columns {
+  display: flex;
+  justify-content: center;
+}
+
+.column {
+  margin-left: .5rem;
+  flex-basis: 25%;
+}
+
+.columnHeading {
+  background-color: var(--column-heading-background);
+  color: white;
+  margin: 0 0 1rem 0;
+  padding: 1rem;
+}
+
+.columnToggles {
+  text-align: center;
+}
+
+.columnToggle {
+  font-size: 2rem;
+  border: 1px solid var(--blue);
+  padding: 1rem 1.5rem;
+  margin-right: .1rem;
+}
+
+.compose {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.composeInput {
+  font-size: 2rem;
+  padding: 1rem;
+}
+
+.entry {
+  border: .1rem solid var(--entry-border);
+  padding: 1rem;
+  margin: 0 0 .5rem 0;
+}

@@ -1,19 +1,23 @@
 //@ts-ignore
 import React, { useState } from 'react'
 import visually from './styles/visually.module.css'
-import unset from './styles/unset.module.css'
 import border from './styles/border.module.css'
 import backgroundColor from './styles/background-color.module.css'
+import styles from './styles/app.module.css'
 import cx from 'classnames'
 
 function Entry({ children }: { children: string }) {
   return (
-    <div>
+    <div className={styles.entry}>
       {children}
-      <label htmlFor={children}>Starred</label>
+      <label htmlFor={children}><span role="presentation">☆</span><span className={visually.hidden}>Starred</span></label>
       <input type="checkbox" id={children} />
     </div>
   )
+}
+
+function Columns({ children }: { children: React.ReactNode[] }) {
+  return <div className={styles.columns}>{children}</div>
 }
 
 function Column({
@@ -26,15 +30,15 @@ function Column({
   show: boolean
 }) {
   return show ? (
-    <section aria-labelledby={title}>
-      <h2 id={title}>{title}</h2>
+    <section aria-labelledby={title} className={styles.column}>
+      <h2 id={title} className={styles.columnHeading}>{title}</h2>
       {children}
     </section>
   ) : null
 }
 
 function ColumnToggles({ children }: { children: React.ReactNode }) {
-  return <div>{children}</div>
+  return <div className={styles.columnToggles}>{children}</div>
 }
 
 function ColumnToggle({
@@ -53,7 +57,7 @@ function ColumnToggle({
       role="switch"
       aria-checked={on}
       onClick={onClick}
-      className={cx(border.none, {
+      className={cx(styles.columnToggle, {
         [backgroundColor.blue]: on,
         [backgroundColor.transparent]: !on,
       })}>
@@ -65,11 +69,12 @@ function ColumnToggle({
 
 function Compose({ categories }: { categories: string[] }) {
   return (
-    <form>
+    <form className={styles.compose}>
       <label htmlFor="content" className={visually.hidden}>
         Write down your idea
       </label>
       <input
+        className={styles.composeInput}
         type="text"
         name="content"
         id="content"
@@ -94,7 +99,7 @@ function App() {
   const [showHappyColumn, setShowHappyColumn] = useState(true)
   const [showSadColumn, setShowSadColumn] = useState(true)
   const [showConfusedColumn, setShowConfusedColumn] = useState(true)
-  const [showStarredColumn, setShowStarredColumn] = useState(true)
+  const [showStarredColumn, setShowStarredColumn] = useState(false)
 
   const handleHappyColumnToggle = () => {
     setShowHappyColumn(!showHappyColumn)
@@ -108,19 +113,25 @@ function App() {
   const handleStarredColumnToggle = () => {
     setShowStarredColumn(!showStarredColumn)
   }
-
   return (
     <>
-      <Column title="Happy" show={showHappyColumn}>
-        <Entry>This is good</Entry>
-      </Column>
-      <Column title="Sad" show={showSadColumn}>
-        <Entry>This is sad</Entry>
-      </Column>
-      <Column title="Confused" show={showConfusedColumn}>
-        <Entry>This is confused</Entry>
-      </Column>
-      <Column title="Starred" show={showStarredColumn} />
+    <h1 className={visually.hidden}>Retro</h1>
+    <main className={styles.main}>
+      <Columns>
+        <Column title="Happy" show={showHappyColumn}>
+          <Entry>This is good</Entry>
+          <Entry>This is good, too</Entry>
+        </Column>
+        <Column title="Sad" show={showSadColumn}>
+          <Entry>This is sad</Entry>
+          <Entry>This is sad, too</Entry>
+        </Column>
+        <Column title="Confused" show={showConfusedColumn}>
+          <Entry>This is confused</Entry>
+          <Entry>This is confused, too</Entry>
+        </Column>
+        <Column title="Starred" show={showStarredColumn} />
+      </Columns>
       <ColumnToggles>
         <ColumnToggle
           emoji={'👍'}
@@ -148,6 +159,7 @@ function App() {
         />
       </ColumnToggles>
       <Compose categories={['Happy', 'Sad', 'Confused']} />
+    </main>
     </>
   )
 }
