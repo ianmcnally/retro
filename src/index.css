@@ -3,6 +3,7 @@ html {
   font-size: 62.5%;
   --column-toggle-color: #f0f4f7;
   --column-heading-background: #9fb1c3;
+  --loading-spinner: #9fb1c3;
   --entry-border: #cfd8e1;
 }
 

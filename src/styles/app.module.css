@@ -54,3 +54,11 @@
   padding: 1rem;
   margin: 0 0 .5rem 0;
 }
+
+.entryStar {
+  float: right;
+}
+
+.loading {
+  stroke: var(--loading-spinner);
+}
