@@ -5,6 +5,7 @@ html {
   --column-heading-background: #9fb1c3;
   --loading-spinner: #9fb1c3;
   --entry-border: #cfd8e1;
+  --vh: 1vh;
 }
 
 body {
@@ -16,6 +17,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 1.6rem;
+}
+
+#root {
+  height: calc(var(--vh, 1vh) * 100);
 }
 
 *, *:before, *:after {

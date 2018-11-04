@@ -1,7 +1,8 @@
 .main {
   display: grid;
-  grid-template-rows: minmax(62vh, 1fr) auto auto;
-  margin: 2rem;
+  grid-template-rows: 1fr auto auto;
+  height: 100%;
+  padding: 2rem;
 }
 
 .columns {
@@ -12,7 +13,6 @@
   .columns {
     flex-direction: column;
     justify-content: flex-start;
-    max-height: 62vh;
     overflow-y: auto;
   }
 }

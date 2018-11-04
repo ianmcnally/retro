@@ -1,5 +1,5 @@
 //@ts-ignore
-import React, { useState, Suspense } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import visually from './styles/visually.module.css'
 import border from './styles/border.module.css'
 import backgroundColor from './styles/background-color.module.css'
@@ -74,7 +74,9 @@ function Entry({ children }: { children: string }) {
     <div className={styles.entry}>
       {children}
       <label htmlFor={children}>
-        <span role="presentation" className={styles.entryStar}>{starred ? '⭐️' : '☆'}</span>
+        <span role="presentation" className={styles.entryStar}>
+          {starred ? '⭐️' : '☆'}
+        </span>
         <span className={visually.hidden}>Starred</span>
       </label>
       <input
@@ -195,6 +197,7 @@ function App() {
   const [showSadColumn, setShowSadColumn] = useState(true)
   const [showConfusedColumn, setShowConfusedColumn] = useState(true)
   const [showStarredColumn, setShowStarredColumn] = useState(false)
+  useViewportHeightOnMobile()
 
   const handleHappyColumnToggle = () => {
     setShowHappyColumn(!showHappyColumn)
@@ -263,6 +266,20 @@ function App() {
       </main>
     </>
   )
+}
+
+function useViewportHeightOnMobile() {
+  return useEffect(() => {
+    const documentElement = document.documentElement
+    if (!documentElement) {
+      return
+    }
+    const isMobile = 'ontouchstart' in documentElement
+    if (isMobile) {
+      const viewportHeight = window.innerHeight * 0.01
+      documentElement.style.setProperty('--vh', `${viewportHeight}px`)
+    }
+  }, [])
 }
 
 export default App
