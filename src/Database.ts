@@ -4,7 +4,9 @@ import 'firebase/firestore'
 const config = {
   apiKey: process.env.REACT_APP_DATABASE_API_KEY,
   authDomain: `${process.env.REACT_APP_DATABASE_PROJECT_ID}.firebaseapp.com`,
-  databaseURL: `https://${process.env.REACT_APP_DATABASE_PROJECT_ID}.firebaseio.com`,
+  databaseURL: `https://${
+    process.env.REACT_APP_DATABASE_PROJECT_ID
+  }.firebaseio.com`,
   projectId: process.env.REACT_APP_DATABASE_PROJECT_ID,
 }
 
@@ -16,7 +18,8 @@ database.settings({
   timestampsInSnapshots: true,
 })
 
-interface Idea {
+export interface Idea {
+  id?: string
   content: string
   starred: boolean
   votes: number
@@ -42,23 +45,26 @@ export const addSadIdeaToRetro = (idea: Idea, retroId: RetroId) =>
 export const addConfusedIdeaToRetro = (idea: Idea, retroId: RetroId) =>
   addIdeaOfTypeToRetro(idea, 'confused', retroId)
 
-export const getHappyIdeasForRetro = (retroId: RetroId) =>
+const getIdeasOfTypeForRetro = (retroId: RetroId, type: IdeaType) =>
   database
     .collection('retros')
     .doc(retroId)
-    .collection('happy')
+    .collection(type)
     .get()
+    .then(snapshots =>
+      Promise.resolve(
+        snapshots.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })),
+      ),
+    )
+
+export const getHappyIdeasForRetro = (retroId: RetroId) =>
+  getIdeasOfTypeForRetro(retroId, 'happy')
 
 export const getSadIdeasForRetro = (retroId: RetroId) =>
-  database
-    .collection('retros')
-    .doc(retroId)
-    .collection('sad')
-    .get()
+  getIdeasOfTypeForRetro(retroId, 'sad')
 
 export const getConfusedIdeasForRetro = (retroId: RetroId) =>
-  database
-    .collection('retros')
-    .doc(retroId)
-    .collection('confused')
-    .get()
+  getIdeasOfTypeForRetro(retroId, 'confused')

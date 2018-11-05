@@ -6,14 +6,30 @@ import border from './styles/border.module.css'
 import backgroundColor from './styles/background-color.module.css'
 import styles from './styles/app.module.css'
 import cx from 'classnames'
+//@ts-ignore
+import { unstable_createResource as createResource } from 'react-cache'
 import {
   addHappyIdeaToRetro,
   addSadIdeaToRetro,
   addConfusedIdeaToRetro,
+  getHappyIdeasForRetro,
+  getSadIdeasForRetro,
+  getConfusedIdeasForRetro,
+  Idea,
 } from './Database'
 
-function Entry({ children }: { children: string }) {
-  const [starred, setStarred] = useState(false)
+const happyIdeasResource = createResource(getHappyIdeasForRetro)
+const sadIdeasResource = createResource(getSadIdeasForRetro)
+const confusedIdeasResource = createResource(getConfusedIdeasForRetro)
+
+function Entry({
+  children,
+  isStarred = false,
+}: {
+  children: React.ReactNode
+  isStarred?: boolean
+}) {
+  const [starred, setStarred] = useState(isStarred)
   const onChange = () => {
     setStarred(!starred)
   }
@@ -21,7 +37,7 @@ function Entry({ children }: { children: string }) {
   return (
     <div className={styles.entry}>
       {children}
-      <label htmlFor={children}>
+      <label htmlFor={String(children)}>
         <span role="presentation" className={styles.entryStar}>
           {starred ? '⭐️' : '☆'}
         </span>
@@ -29,7 +45,7 @@ function Entry({ children }: { children: string }) {
       </label>
       <input
         type="checkbox"
-        id={children}
+        id={String(children)}
         checked={starred}
         onChange={onChange}
         className={visually.hidden}
@@ -134,6 +150,7 @@ function Compose({
 }
 
 function Retro(props: { retroId: string }) {
+  const { retroId } = props
   const [showHappyColumn, setShowHappyColumn] = useState(true)
   const [showSadColumn, setShowSadColumn] = useState(true)
   const [showConfusedColumn, setShowConfusedColumn] = useState(true)
@@ -154,13 +171,8 @@ function Retro(props: { retroId: string }) {
   }
   const handleComposeSubmit = (event: React.FormEvent<any>) => {
     event.preventDefault()
-    const {
-     retroId
-    } = props
     //@ts-ignore
     const { content, category } = event.target
-    //@ts-ignore
-    console.log('submit', 'content', content.value, 'category', category.value)
     switch (category.value) {
       case 'happy':
         addHappyIdeaToRetro(
@@ -186,22 +198,44 @@ function Retro(props: { retroId: string }) {
     //@ts-ignore
     event.target.reset()
   }
+  const happyIdeas = happyIdeasResource.read(retroId)
+  const sadIdeas = sadIdeasResource.read(retroId)
+  const confusedIdeas = confusedIdeasResource.read(retroId)
+
   return (
     <>
       <h1 className={visually.hidden}>Retro</h1>
       <main className={styles.main}>
         <Columns>
           <Column title="happy" show={showHappyColumn}>
-            <Entry>This is good</Entry>
-            <Entry>This is good, too</Entry>
+            {happyIdeas.map((idea: Idea) => (
+              <Entry isStarred={idea.starred} key={idea.id}>
+                <span>
+                  {idea.content} votes:
+                  {idea.votes}
+                </span>
+              </Entry>
+            ))}
           </Column>
           <Column title="sad" show={showSadColumn}>
-            <Entry>This is sad</Entry>
-            <Entry>This is sad, too</Entry>
+            {sadIdeas.map((idea: Idea) => (
+              <Entry isStarred={idea.starred} key={idea.id}>
+                <span>
+                  {idea.content} votes:
+                  {idea.votes}
+                </span>
+              </Entry>
+            ))}
           </Column>
           <Column title="confused" show={showConfusedColumn}>
-            <Entry>This is confused</Entry>
-            <Entry>This is confused, too</Entry>
+            {confusedIdeas.map((idea: Idea) => (
+              <Entry isStarred={idea.starred} key={idea.id}>
+                <span>
+                  {idea.content} votes:
+                  {idea.votes}
+                </span>
+              </Entry>
+            ))}
           </Column>
           <Column title="starred" show={showStarredColumn} />
         </Columns>
